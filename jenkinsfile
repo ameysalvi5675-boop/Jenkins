@@ -1,17 +1,48 @@
 pipeline {
     agent {
-        label 'Agent_Part1_Config'  // Specify the agent configuration
+        label 'Agent_Part1_Config'  // Specify the agent to run the pipeline
     }
     
     stages {
-        stage('Run amey.sh Script') {
+        stage('Build') {
             steps {
                 script {
-                    // Ensure that the script is executable
-                    sh 'chmod +x amey.sh'   // Optional, depending on your file's permissions
+                    echo 'Starting the build process...'
+                    // Build commands (e.g., compile code, install dependencies)
+                    sh 'echo "Building project..."'
+                    // Add actual build commands here, e.g., `mvn clean install`, `npm install`, etc.
+                }
+            }
+        }
 
-                    // Run the amey.sh script
-                    sh './amey.sh'
+        stage('Test') {
+            steps {
+                script {
+                    echo 'Starting the testing process...'
+                    // Test commands (e.g., run unit tests, integration tests)
+                    sh 'echo "Running tests..."'
+                    // Add actual test commands here, e.g., `mvn test`, `npm test`, etc.
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    echo 'Starting the deployment process...'
+                    // Deployment commands (e.g., deploy to server, cloud, etc.)
+                    sh 'echo "Deploying project..."'
+                    // Add actual deployment commands here, e.g., `docker-compose up`, `kubectl apply`, etc.
+                }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                script {
+                    echo 'Cleaning up after the deployment...'
+                    // Clean up commands (e.g., delete temporary files, Docker containers, etc.)
+                    sh 'echo "Cleanup completed."'
                 }
             }
         }
@@ -19,8 +50,13 @@ pipeline {
     
     post {
         always {
-            // Any cleanup or post actions
-            echo 'Pipeline execution complete.'
+            echo 'Pipeline execution is complete.'
+        }
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline execution failed.'
         }
     }
 }

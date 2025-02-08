@@ -1,23 +1,26 @@
 pipeline {
-    agent 
-    {
-        label: Jenkins_Node_Agent_1
+    agent {
+        label 'Agent_Part1_Config'  // Specify the agent configuration
     }
+    
     stages {
-        stage('Build') {
+        stage('Run amey.sh Script') {
             steps {
-                echo 'Building...'
+                script {
+                    // Ensure that the script is executable
+                    sh 'chmod +x amey.sh'   // Optional, depending on your file's permissions
+
+                    // Run the amey.sh script
+                    sh './amey.sh'
+                }
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Testing...'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying...'
-            }
+    }
+    
+    post {
+        always {
+            // Any cleanup or post actions
+            echo 'Pipeline execution complete.'
         }
     }
 }

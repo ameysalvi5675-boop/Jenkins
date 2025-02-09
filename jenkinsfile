@@ -52,7 +52,7 @@ pipeline {
             steps {
                 script {
                     // Pull the Docker image from Docker Hub
-                    echo "Pulling Docker image ${IMAGE_NAME}:${IMAGE_TAG}"
+                    echo "Pulling Docker image ${IMAGE_NAME}:${TAG}"
                     docker.image("${IMAGE_NAME}:${TAG}").pull()
                 }
             }

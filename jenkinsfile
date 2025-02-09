@@ -1,62 +1,67 @@
 pipeline {
-    agent {
-        label 'Agent_Part1_Config'  // Specify the agent to run the pipeline
+    agent { label 'docker-agent' }  // This specifies the agent on which the pipeline will run
+
+    environment {
+        DOCKER_HUB_CREDENTIALS = 'Docker-cred'  // Jenkins credentials ID for Docker Hub
+        IMAGE_NAME = 'mynewimage/python-app'       // Replace with your Docker Hub repo
+        TAG = 'latest'                                   // Use the desired image tag (e.g., commit ID or version)
     }
-    
+
     stages {
-        stage('Build') {
+        stage('Checkout') {
+            steps {
+                // Checkout the code from your repository
+                git branch: 'main', url: 'https://github.com/ameysalvi5675-boop/Jenkins.git'
+            }
+        }
+
+        stage('Build Docker Image') {
             steps {
                 script {
-                    echo 'Starting the build process...'
-                    // Build commands (e.g., compile code, install dependencies)
-                    sh 'echo "Building project..."'
-                    // Add actual build commands here, e.g., `mvn clean install`, `npm install`, etc.
+                    // Build the Docker image
+                    sh """
+                        docker build -t ${IMAGE_NAME}:${TAG} .
+                    """
                 }
             }
         }
 
-        stage('Test') {
+        stage('Login to Docker Hub') {
             steps {
                 script {
-                    echo 'Starting the testing process...'
-                    // Test commands (e.g., run unit tests, integration tests)
-                    sh 'echo "Running tests..."'
-                    // Add actual test commands here, e.g., `mvn test`, `npm test`, etc.
+                    // Login to Docker Hub
+                    withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
+                    }
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('Push Docker Image') {
             steps {
                 script {
-                    echo 'Starting the deployment process...'
-                    // Deployment commands (e.g., deploy to server, cloud, etc.)
-                    sh 'echo "Deploying project..."'
-                    // Add actual deployment commands here, e.g., `docker-compose up`, `kubectl apply`, etc.
+                    // Push the Docker image to Docker Hub
+                    sh """
+                        docker push ${IMAGE_NAME}:${TAG}
+                    """
                 }
             }
         }
 
-        stage('Cleanup') {
+        stage('Clean Up') {
             steps {
                 script {
-                    echo 'Cleaning up after the deployment...'
-                    // Clean up commands (e.g., delete temporary files, Docker containers, etc.)
-                    sh 'echo "Cleanup completed."'
+                    // Optionally, remove the image from the local system after pushing it
+                    sh "docker rmi ${IMAGE_NAME}:${TAG}"
                 }
             }
         }
     }
-    
+
     post {
         always {
-            echo 'Pipeline execution is complete.'
-        }
-        success {
-            echo 'Pipeline executed successfully!'
-        }
-        failure {
-            echo 'Pipeline execution failed.'
+            // Clean up Docker resources
+            sh 'docker system prune -f'
         }
     }
 }

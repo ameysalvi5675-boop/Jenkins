@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'docker-agent' }  // This specifies the agent on which the pipeline will run
+    agent { label 'Happy-Me' }  // This specifies the agent on which the pipeline will run
 
     environment {
         DOCKER_HUB_CREDENTIALS = 'Docker-cred'  // Jenkins credentials ID for Docker Hub

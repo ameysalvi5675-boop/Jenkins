@@ -49,34 +49,11 @@ pipeline {
             steps {
                 script {
                     echo "Running the Docker container from ${IMAGE_NAME}:${TAG}"
-                    // Capture the container ID from the `docker run` command
-                    def containerId = sh(script: "docker run -d ${IMAGE_NAME}:${TAG}", returnStdout: true).trim()
-                    echo "Container ID is ${containerId}"
-                    // Store the container ID for cleanup
-                    currentBuild.description = "Container ID: ${containerId}"
+                    sh "docker run -d -p 5000:5000 ${IMAGE_NAME}:${TAG}"
                 }
             }
         }
 
-        stage('Clean Up') {
-            steps {
-                script {
-                    // Get the container ID stored from the previous stage
-                    def containerId = currentBuild.description.replace("Container ID: ", "")
-                    echo "Cleaning up by stopping and removing the container"
-                    // Stop and remove the container
-                    sh "docker stop ${containerId}"
-                    sh "docker rm ${containerId}"
-                    // Optionally, remove the image from the local system
-                    sh "docker rmi ${IMAGE_NAME}:${TAG}"
-                }
-            }
-        }
     }
-    post {
-        always {
-            echo 'Cleaning up Docker system'
-            sh 'docker system prune -f'
-        }
-    }
+    
 }

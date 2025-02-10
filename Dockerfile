@@ -15,7 +15,7 @@ EXPOSE 8080
 
 # Step 6: Define environment variables (optional)
 ENV FLASK_APP=app.py
-ENV FLASK_RUN_HOST=0.0.0.0
+ENV FLASK_RUN_HOST=54.89.34.252
 
 # Step 7: Run the Flask app when the container launches
 CMD ["flask", "run"]

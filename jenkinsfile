@@ -1,6 +1,7 @@
 pipeline {
     agent { label 'Task_Agent_1' }
     environment {
+        DOCKER_HUB_CREDENTIALS = 'docker-cred'
         IMAGE_NAME = 'ameysalvi5675/py-app'
         TAG = 'latest'
     }

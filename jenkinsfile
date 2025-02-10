@@ -14,7 +14,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/ameysalvi5675-boop/Jenkins.git'
             }
         }
-
+}
         stage('Build Docker Image') {
             steps {
                 script {
@@ -66,7 +66,7 @@ pipeline {
                     docker.image("${IMAGE_NAME}:${TAG}").run()
                     // Optionally, wait for the container to complete or interact with it
                     // For example, you could run tests, or just leave it running for observation
-                    echo "Container is running with ID: ${container.id}"
+                    echo "Container is running with ID: ${containerId}"
                 }
             }
         }
@@ -77,12 +77,12 @@ pipeline {
                     sh "docker rmi ${IMAGE_NAME}:${TAG}"
 		    // Stop and remove the container
                     echo "Cleaning up by stopping and removing the container"
-                    docker.container(container.id).stop()
-                    docker.container(container.id).remove()
+                    sh "docker stop ${containerId}"
+            	    sh "docker rm ${containerId}"
                 }
             }
         }
-    }
+    
 
     post {
         always {

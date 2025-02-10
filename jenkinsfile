@@ -70,17 +70,11 @@ pipeline {
                 }
             }
         }
-        stage('Clean Up') {
+        stage('Clean Workspace') {
             steps {
                 script {
-                    // Get the container ID stored from the previous stage
-                    def containerId = currentBuild.description.replace("Container ID: ", "")
-                    echo "Cleaning up by stopping and removing the container"
-                    // Stop and remove the container
-                    sh "docker stop ${containerId}"
-                    sh "docker rm ${containerId}"
-                    // Optionally, remove the image from the local system
-                    sh "docker rmi ${IMAGE_NAME}:${TAG}"
+                    echo "Cleaning up workspace..."
+                    deleteDir() // Deletes all files in the workspace
                 }
             }
         }

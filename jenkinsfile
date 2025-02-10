@@ -70,18 +70,7 @@ pipeline {
                 }
             }
         }
-        stage('Clean Up') {
-            steps {
-                script {
-                    // Optionally, remove the image from the local system after pushing it
-                    sh "docker rmi ${IMAGE_NAME}:${TAG}"
-		    // Stop and remove the container
-                    echo "Cleaning up by stopping and removing the container"
-                    sh "docker stop ${containerId}"
-            	    sh "docker rm ${containerId}"
-                }
-            }
-        }
+        
     }
 
     post {

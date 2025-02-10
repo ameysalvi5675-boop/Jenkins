@@ -2,7 +2,7 @@ pipeline {
     agent { label 'Task_Agent_1' }  // This specifies the agent on which the pipeline will run
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'Docker-cred'  // Jenkins credentials ID for Docker Hub
+        DOCKER_HUB_CREDENTIALS = 'docker-cred'  // Jenkins credentials ID for Docker Hub
         IMAGE_NAME = 'ameysalvi5675/python-app'       // Replace with your Docker Hub repo
         TAG = 'latest'                                   // Use the desired image tag (e.g., commit ID or version)
     }

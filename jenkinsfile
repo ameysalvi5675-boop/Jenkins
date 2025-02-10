@@ -63,7 +63,7 @@ pipeline {
                 script {
                     // Run the Docker container
                     echo "Running the Docker container from ${IMAGE_NAME}:${TAG}"
-                    docker.image("{IMAGE_NAME}:${TAG}").run()
+                    docker.image("${IMAGE_NAME}:${TAG}").run()
                     // Optionally, wait for the container to complete or interact with it
                     // For example, you could run tests, or just leave it running for observation
                     echo "Container is running with ID: ${container.id}"

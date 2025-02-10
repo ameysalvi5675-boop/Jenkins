@@ -3,8 +3,9 @@ from flask import Flask
 app = Flask(__name__)
 
 @app.route("/")
-def hello():
-    return "Hello from my Python app!"
+def home():
+    return print("hello, py!")
+
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5000)  # Host 0.0.0.0 for Docker
+    app.run(debug=True)

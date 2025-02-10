@@ -52,8 +52,8 @@ pipeline {
             steps {
                 script {
                     // Pull the Docker image from Docker Hub
-                    echo "Pulling Docker image ${IMAGE_NAME}:${IMAGE_TAG}"
-                    docker.image("${IMAGE_NAME}:${IMAGE_TAG}").pull()
+                    echo "Pulling Docker image ${IMAGE_NAME}:${TAG}"
+                    docker.image("${IMAGE_NAME}:${TAG}").pull()
                 }
             }
         }
@@ -62,8 +62,8 @@ pipeline {
             steps {
                 script {
                     // Run the Docker container
-                    echo "Running the Docker container from ${IMAGE_NAME}:${IMAGE_TAG}"
-                    def container = docker.run("${IMAGE_NAME}:${IMAGE_TAG}")
+                    echo "Running the Docker container from ${IMAGE_NAME}:${TAG}"
+                    def container = docker.run("${IMAGE_NAME}:${TAG}")
                     // Optionally, wait for the container to complete or interact with it
                     // For example, you could run tests, or just leave it running for observation
                     echo "Container is running with ID: ${container.id}"

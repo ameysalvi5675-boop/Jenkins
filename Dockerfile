@@ -1,20 +1,20 @@
-# our base image
-FROM alpine:3.5
+# Use the official Node.js image as the base image
+FROM node:14
 
-# Install python and pip
-RUN apk add --update py2-pip
+# Set the working directory inside the container
+WORKDIR /usr/src/app
 
-# install Python modules needed by the Python app
-COPY requirements.txt /usr/src/app/
-RUN apk update && apk add --no-cache ca-certificates
-RUN pip install --no-cache-dir -r /usr/src/app/requirements.txt --trusted-host pypi.org --trusted-host pypi.python.org
+# Copy the package.json and package-lock.json files into the container
+COPY package*.json ./
 
-# copy files required for the app to run
-COPY app.py /usr/src/app/
-COPY /index.html /usr/src/app/templates/
+# Install the dependencies in the container
+RUN npm install
 
-# tell the port number the container should expose
+# Copy the application code into the container
+COPY . .
+
+# Expose port 8080 to make it accessible from outside the container
 EXPOSE 80
 
-# run the application
-CMD ["python", "/usr/src/app/app.py"]
+# Run the app when the container starts
+CMD ["npm", "start"]

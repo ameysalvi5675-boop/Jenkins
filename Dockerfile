@@ -6,7 +6,8 @@ RUN apk add --update py2-pip
 
 # install Python modules needed by the Python app
 COPY requirements.txt /usr/src/app/
-RUN pip install --no-cache-dir -r /usr/src/app/requirements.txt
+RUN apk update && apk add --no-cache ca-certificates
+RUN pip install --no-cache-dir -r /usr/src/app/requirements.txt --trusted-host pypi.org --trusted-host pypi.python.org
 
 # copy files required for the app to run
 COPY app.py /usr/src/app/

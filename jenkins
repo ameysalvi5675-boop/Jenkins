@@ -1,5 +1,5 @@
 pipeline {
-    agent none  // Don't use the default agent; we'll specify it later
+    agent { label 'Task_Agent_1' }
 
     parameters {
         choice(name: 'TASK', choices: ['Task A', 'Task B'], description: 'Choose the Windows task to execute')
@@ -8,7 +8,6 @@ pipeline {
 
     stages {
         stage('Run Task on Windows Node') {
-            agent { label 'WindowsNode' }  // Run this stage on the Windows node
             steps {
                 script {
                     if (params.TASK == 'Task A') {

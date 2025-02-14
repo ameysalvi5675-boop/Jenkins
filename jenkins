@@ -1,0 +1,33 @@
+pipeline {
+    agent none  // Don't use the default agent; we'll specify it later
+
+    parameters {
+        choice(name: 'TASK', choices: ['Task A', 'Task B'], description: 'Choose the Windows task to execute')
+        string(name: 'CUSTOM_SCRIPT', defaultValue: '', description: 'Enter a custom script to run on the Windows node')
+    }
+
+    stages {
+        stage('Run Task on Windows Node') {
+            agent { label 'WindowsNode' }  // Run this stage on the Windows node
+            steps {
+                script {
+                    if (params.TASK == 'Task A') {
+                        echo "Running Task A on Windows Node"
+                        // Example Windows-specific command
+                        bat 'echo Task A executed on Windows'
+                    } else if (params.TASK == 'Task B') {
+                        echo "Running Task B on Windows Node"
+                        // Example Windows-specific command
+                        bat 'echo Task B executed on Windows'
+                    }
+
+                    // If custom script is provided, execute it
+                    if (params.CUSTOM_SCRIPT) {
+                        echo "Running custom script: ${params.CUSTOM_SCRIPT}"
+                        bat params.CUSTOM_SCRIPT
+                    }
+                }
+            }
+        }
+    }
+}

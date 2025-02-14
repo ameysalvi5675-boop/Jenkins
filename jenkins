@@ -5,7 +5,7 @@ pipeline {
         string(name: 'AWS_REGION', defaultValue: 'us-east-2', description: 'The AWS region where the EC2 instance is located.')
         string(name: 'S3_BUCKET', defaultValue: 'serverlogs123', description: 'S3 bucket to upload logs.')
         string(name: 'TASK_COMMAND', defaultValue: 'echo "Hello World from EC2!"', description: 'The task to execute on the EC2 instance.')
-        string(name: 'LOG_FILE_PATH', defaultValue: '/var/log/syslog', description: 'Path to the log file on the EC2 instance.')
+        string(name: 'LOG_FILE_PATH', defaultValue: '/var/log', description: 'Path to the log file on the EC2 instance.')
     }
 
     environment {

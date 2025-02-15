@@ -1,86 +1,32 @@
 pipeline {
     agent { label 'Task_Agent_1' }
-    environment {
-        AWS_REGION = 'us-east-2' // Change to your AWS region
-        INSTANCE_ID = 'i-0f0d01932a34e0fd0' // Your EC2 instance ID
-        INSTANCE_LOG_PATH = '/var/log/syslog' // Log path in EC2
-        LOG_FILE_PATH = '/tmp/instance_logs.txt' // Local path to store logs
+
+    parameters {
+        choice(name: 'TASK', choices: ['Task A', 'Task B'], description: 'Choose the Windows task to execute')
+        string(name: 'CUSTOM_SCRIPT', defaultValue: '', description: 'Enter a custom script to run on the Windows node')
     }
+
     stages {
-        stage('Stop EC2 Instance') {
+        stage('Run Task on Windows Node') {
             steps {
                 script {
-                    // Stop the EC2 instance
-                    sh """
-                    aws ec2 stop-instances --instance-ids ${INSTANCE_ID} --region ${AWS_REGION}
-                    echo "Stopping EC2 Instance: ${INSTANCE_ID} at $(date)"
-                    """
-                }
-            }
-        }
+                    if (params.TASK == 'Task A') {
+                        echo "Running Task A on Windows Node"
+                        // Example Windows-specific command
+                        bat 'echo Task A executed on Windows'
+                    } else if (params.TASK == 'Task B') {
+                        echo "Running Task B on Windows Node"
+                        // Example Windows-specific command
+                        bat 'echo Task B executed on Windows'
+                    }
 
-        stage('Wait for Instance to Stop') {
-            steps {
-                script {
-                    // Wait for the instance to stop (a simple 60 seconds wait in this case)
-                    sleep(time: 60, unit: 'SECONDS')
-                    echo "Waiting for EC2 instance to stop..."
+                    // If custom script is provided, execute it
+                    if (params.CUSTOM_SCRIPT) {
+                        echo "Running custom script: ${params.CUSTOM_SCRIPT}"
+                        bat params.CUSTOM_SCRIPT
+                    }
                 }
             }
-        }
-
-        stage('Collect Logs from EC2 Instance') {
-            steps {
-                script {
-                    // Collect logs from EC2 instance using AWS CLI (assuming CloudWatch Logs are set up)
-                    sh """
-                    aws ssm get-parameters --names 'InstanceLogParameter' --region ${AWS_REGION} --query 'Parameters[0].Value' --output text > ${LOG_FILE_PATH}
-                    echo "Logs collected from EC2 instance."
-                    """
-                }
-            }
-        }
-
-        stage('Start EC2 Instance') {
-            steps {
-                script {
-                    // Start the EC2 instance
-                    sh """
-                    aws ec2 start-instances --instance-ids ${INSTANCE_ID} --region ${AWS_REGION}
-                    echo "Starting EC2 Instance: ${INSTANCE_ID} at $(date)"
-                    """
-                }
-            }
-        }
-
-        stage('Wait for Instance to Start') {
-            steps {
-                script {
-                    // Wait for the instance to start (again, a simple wait of 60 seconds)
-                    sleep(time: 60, unit: 'SECONDS')
-                    echo "Waiting for EC2 instance to start..."
-                }
-            }
-        }
-
-        stage('Post-Start Logs Check') {
-            steps {
-                script {
-                    // Optionally check logs after the instance is started
-                    echo "Checking EC2 instance logs after startup"
-                    sh """
-                    tail -n 20 ${LOG_FILE_PATH} # Show the last 20 lines of logs
-                    """
-                }
-            }
-        }
-    }
-    post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed.'
         }
     }
 }
